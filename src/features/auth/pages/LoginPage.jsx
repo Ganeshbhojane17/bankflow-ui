@@ -153,6 +153,18 @@ function LoginPage() {
                     {loading ? "Signing In..." : "Sign In"}
                 </Button>
 
+                <Typography variant="body2" textAlign="center" sx={{ mt: 2 }}>Don't have an account?{" "}
+
+                     <Button variant="text" onClick={() => navigate("/register")}
+                       sx={{
+                            textTransform: "none",
+                            fontWeight: "bold"
+                          }}
+                          >
+                           Register
+                     </Button>
+                </Typography>
+
             </Box>
 
         </AuthLayout>

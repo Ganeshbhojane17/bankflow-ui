@@ -1,17 +1,44 @@
-import axiosClient from "./axiosClient";
+import tokenStorage from "../utils/tokenStorage";
 
-axiosClient.interceptors.request.use(config => {
+const publicEndpoints = [
+    "/Auth/login",
+    "/Auth/register",
+    "/Auth/refresh-token"
+];
 
-    const token = localStorage.getItem("accessToken");
+export const attachAccessToken = (client) => {
 
-    if (token) {
+    client.interceptors.request.use(
+        (config) => {
 
-        config.headers.Authorization = `Bearer ${token}`;
+            const isPublicEndpoint =
+                publicEndpoints.some(endpoint =>
+                    config.url
+                        ?.toLowerCase()
+                        .includes(endpoint.toLowerCase())
+                );
 
-    }
+            if (isPublicEndpoint) {
+                return config;
+            }
 
+            const token =
+                tokenStorage.getAccessToken();
 
-    
-    return config;
+            if (token) {
 
-});
+                config.headers =
+                    config.headers || {};
+
+                config.headers.Authorization =
+                    `Bearer ${token}`;
+            }
+
+            return config;
+        },
+
+        (error) => Promise.reject(error)
+    );
+
+    return client;
+};

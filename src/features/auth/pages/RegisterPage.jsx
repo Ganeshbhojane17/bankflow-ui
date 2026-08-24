@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { Container, Paper, Typography, TextField, Button, Alert, Box } from "@mui/material";
 import { registerUser } from "../services/authService";
 import AuthLayout from "../../../layouts/AuthLayout";
 
+
 function RegisterPage() {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
@@ -51,6 +54,18 @@ function RegisterPage() {
           />
 
           <Button variant="contained" type="submit">Register</Button>
+
+          <Typography variant="body2" textAlign="center"sx={{ mt: 2 }}>
+                Already have an account?{" "}
+
+              <Button variant="text" onClick={() => navigate("/login")}
+                     sx={{
+                        textTransform: "none",
+                        fontWeight: "bold"
+                       }} >
+                  Sign In
+              </Button>
+          </Typography>
         </Box>
       </AuthLayout>
   );
