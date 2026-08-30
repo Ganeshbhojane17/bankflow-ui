@@ -1,0 +1,54 @@
+.app-header {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 64px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 24px;
+
+    box-sizing: border-box;
+
+    background-color: #155a91;
+    color: white;
+
+    z-index: 1000;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.header-title {
+    margin: 0;
+
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.notification-button {
+    border: none;
+    background: transparent;
+
+    color: white;
+
+    font-size: 22px;
+
+    cursor: pointer;
+
+    padding: 6px;
+}
+
+.notification-button:hover {
+    opacity: 0.8;
+}

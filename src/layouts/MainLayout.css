@@ -1,0 +1,26 @@
+.app-layout {
+    min-height: 100vh;
+    min-width: 150vh;
+    background-color: #f4f7fa;
+}
+
+.main-section {
+    margin-left: 100px;
+
+    min-height: 100vh;
+    min-width: 150vh;
+    display: flex;
+    flex-direction: column;
+
+    box-sizing: border-box;
+}
+
+.page-content {
+    flex: 1;
+
+    padding: 70px 32px 32px;
+
+    box-sizing: border-box;
+
+    width: 100%;
+}

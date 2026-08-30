@@ -1,87 +1,35 @@
-import {
-    Card,
-    CardContent,
-    Typography,
-    Box
-} from "@mui/material";
+import "./DashboardCard.css";
 
 function DashboardCard({
     title,
     value,
     icon,
-    color = "primary.main"
+    color
 }) {
 
     return (
+        <div className={`dashboard-card ${color}`}>
 
-        <Card
-            elevation={2}
-            sx={{
-                height: "100%",
-                borderRadius: 3,
-                transition: "all 0.3s ease",
-                cursor: "pointer",
-                "&:hover": {
-                    transform: "translateY(-5px)",
-                    boxShadow: 8
-                }
-            }}
-        >
+            <div className="dashboard-card-content">
 
-            <CardContent>
+                <div>
+                    <div className="dashboard-card-title">
+                        {title}
+                    </div>
 
-                <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                >
+                    <div className="dashboard-card-value">
+                        {value}
+                    </div>
+                </div>
 
-                    {/* Left Section */}
+                <div className="dashboard-card-icon">
+                    {icon}
+                </div>
 
-                    <Box>
+            </div>
 
-                        <Typography
-                            variant="body2"
-                            color="text.secondary"
-                        >
-                            {title}
-                        </Typography>
-
-                        <Typography
-                            variant="h4"
-                            fontWeight="bold"
-                            sx={{ mt: 1 }}
-                        >
-                            {value}
-                        </Typography>
-
-                    </Box>
-
-                    {/* Right Section */}
-
-                    <Box
-                        sx={{
-                            width: 60,
-                            height: 60,
-                            borderRadius: "50%",
-                            backgroundColor: color,
-                            color: "#fff",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center"
-                        }}
-                    >
-                        {icon}
-                    </Box>
-
-                </Box>
-
-            </CardContent>
-
-        </Card>
-
+        </div>
     );
-
 }
 
 export default DashboardCard;

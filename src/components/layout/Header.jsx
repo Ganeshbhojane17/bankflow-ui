@@ -1,58 +1,61 @@
-import {
-    AppBar,
-    Toolbar,
-    Typography,
-    IconButton
-} from "@mui/material";
-
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import ProfileMenu from "./ProfileMenu";
+
 import { logout } from "../../features/auth/authSlice";
 import { logoutUser } from "../../features/auth/services/authService";
+
+import "./Header.css";
 
 function Header() {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-   const handleLogout = async () => {
+    const handleLogout = async () => {
 
-    await logoutUser();
+        try {
+            await logoutUser();
+        }
+        catch (error) {
+            console.error("Logout failed:", error);
+        }
 
-    dispatch(logout());
+        dispatch(logout());
 
-    navigate("/login", { replace: true });
-
-};
+        navigate("/login", {
+            replace: true
+        });
+    };
 
     return (
+        <header className="app-header">
 
-        <AppBar position="fixed">
-
-            <Toolbar>
-
-                <Typography
-                    variant="h6"
-                    sx={{ flexGrow: 1 }}
-                >
+            <div className="header-left">
+                <h1 className="header-title">
                     BankFlow CRM
-                </Typography>
+                </h1>
+            </div>
 
-                <IconButton color="inherit">
-                    <NotificationsIcon />
-                </IconButton>
+            <div className="header-right">
 
-                <ProfileMenu onLogout={handleLogout} />
+                <button
+                    type="button"
+                    className="notification-button"
+                    aria-label="Notifications"
+                >
+                    🔔
+                </button>
 
-            </Toolbar>
+                <ProfileMenu
+                    onLogout={handleLogout}
+                />
 
-        </AppBar>
+            </div>
 
+        </header>
     );
-
 }
 
 export default Header;

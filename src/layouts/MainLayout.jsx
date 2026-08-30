@@ -1,52 +1,32 @@
-import { Box, Toolbar } from "@mui/material";
+import { Outlet } from "react-router-dom";
 
 import Header from "../components/layout/Header";
 import Sidebar from "../components/layout/Sidebar";
 import Footer from "../components/layout/Footer";
 
-const drawerWidth = 250;
+import "./MainLayout.css";
 
-function MainLayout({ children }) {
+function MainLayout() {
 
     return (
-
-        <Box sx={{ display: "flex" }}>
+        <div className="app-layout">
 
             <Header />
 
             <Sidebar />
 
-            <Box
-                component="main"
-                sx={{
-                    flexGrow: 1,
-                    width: `calc(100% - ${drawerWidth}px)`,
-                    minHeight: "100vh",
-                    bgcolor: "#F4F7FA",
-                    display: "flex",
-                    flexDirection: "column"
-                }}
-            >
+            <div className="main-section">
 
-                <Toolbar />
-
-                <Box
-                    sx={{
-                        flexGrow: 1,
-                        p: 4
-                    }}
-                >
-                    {children}
-                </Box>
+                <main className="page-content">
+                    <Outlet />
+                </main>
 
                 <Footer />
 
-            </Box>
+            </div>
 
-        </Box>
-
+        </div>
     );
-
 }
 
 export default MainLayout;

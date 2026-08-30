@@ -1,67 +1,26 @@
-import {
-    Drawer,
-    Toolbar,
-    List
-} from "@mui/material";
-
 import navigation from "../../utils/navigation";
-
 import NavigationItem from "./NavigationItem";
 
-const drawerWidth = 250;
+import "./Sidebar.css";
 
 function Sidebar() {
 
     return (
+        <aside className="sidebar">
 
-        <Drawer
+            <nav className="sidebar-nav">
 
-            variant="permanent"
+                {navigation.map((item) => (
+                    <NavigationItem
+                        key={item.title}
+                        item={item}
+                    />
+                ))}
 
-            sx={{
+            </nav>
 
-                width: drawerWidth,
-
-                flexShrink: 0,
-
-                "& .MuiDrawer-paper": {
-
-                    width: drawerWidth,
-
-                    boxSizing: "border-box"
-
-                }
-
-            }}
-
-        >
-
-            <Toolbar />
-
-            <List>
-
-                {
-
-                    navigation.map(item => (
-
-                        <NavigationItem
-
-                            key={item.title}
-
-                            item={item}
-
-                        />
-
-                    ))
-
-                }
-
-            </List>
-
-        </Drawer>
-
+        </aside>
     );
-
 }
 
 export default Sidebar;

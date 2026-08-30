@@ -1,0 +1,42 @@
+.navigation-item {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 14px 20px;
+
+    color: #1f2937;
+    text-decoration: none;
+
+    font-size: 16px;
+
+    transition: background-color 0.2s ease,
+                color 0.2s ease;
+}
+
+.navigation-item:hover {
+    background-color: #f3f6f9;
+}
+
+.navigation-item.active {
+    background-color: #e8f1fb;
+    color: #155a91;
+    font-weight: 600;
+}
+
+.navigation-icon {
+    width: 32px;
+    min-width: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-right: 8px;
+}
+
+.navigation-title {
+    white-space: nowrap;
+}

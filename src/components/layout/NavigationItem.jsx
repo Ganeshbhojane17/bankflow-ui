@@ -1,34 +1,23 @@
-import {
-    ListItemButton,
-    ListItemIcon,
-    ListItemText
-} from "@mui/material";
-
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import "./NavigationItem.css";
 
 function NavigationItem({ item }) {
-
     return (
-
-        <ListItemButton
-            component={Link}
+        <NavLink
             to={item.path}
+            className={({ isActive }) =>
+                `navigation-item ${isActive ? "active" : ""}`
+            }
         >
-
-            <ListItemIcon>
-
+            <span className="navigation-icon">
                 {item.icon}
+            </span>
 
-            </ListItemIcon>
-
-            <ListItemText
-                primary={item.title}
-            />
-
-        </ListItemButton>
-
+            <span className="navigation-title">
+                {item.title}
+            </span>
+        </NavLink>
     );
-
 }
 
 export default NavigationItem;

@@ -1,95 +1,70 @@
-import Grid from "@mui/material/Grid";
-
-import MainLayout from "../../../layouts/MainLayout";
 import DashboardHeader from "../components/DashboardHeader";
-import DashboardCard from "../../../components/dashboard/DashboardCard";
+import DashboardCard from "../components/DashboardCard";
 import RecentCustomers from "../components/RecentCustomers";
 
-import PeopleIcon from "@mui/icons-material/People";
-import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
-import CreditCardIcon from "@mui/icons-material/CreditCard";
-import PendingActionsIcon from "@mui/icons-material/PendingActions";
+import "./DashboardPage.css";
 
 function DashboardPage() {
 
     return (
-
-        <MainLayout>
+        <div className="dashboard-page">
 
             <DashboardHeader />
 
             {/* KPI Cards */}
+            <div className="dashboard-cards">
 
-            <Grid container spacing={3}>
+                <DashboardCard
+                    title="Customers"
+                    value="1,250"
+                    icon="👥"
+                    color="blue"
+                />
 
-                <Grid item xs={12} sm={6} lg={3}>
-                    <DashboardCard
-                        title="Customers"
-                        value={1250}
-                        icon={<PeopleIcon />}
-                        color="#1565C0"
-                    />
-                </Grid>
+                <DashboardCard
+                    title="Accounts"
+                    value="560"
+                    icon="🏦"
+                    color="green"
+                />
 
-                <Grid item xs={12} sm={6} lg={3}>
-                    <DashboardCard
-                        title="Accounts"
-                        value={560}
-                        icon={<AccountBalanceIcon />}
-                        color="#2E7D32"
-                    />
-                </Grid>
+                <DashboardCard
+                    title="Loans"
+                    value="52"
+                    icon="💳"
+                    color="orange"
+                />
 
-                <Grid item xs={12} sm={6} lg={3}>
-                    <DashboardCard
-                        title="Loans"
-                        value={52}
-                        icon={<CreditCardIcon />}
-                        color="#ED6C02"
-                    />
-                </Grid>
+                <DashboardCard
+                    title="Pending"
+                    value="18"
+                    icon="⏳"
+                    color="red"
+                />
 
-                <Grid item xs={12} sm={6} lg={3}>
-                    <DashboardCard
-                        title="Pending"
-                        value={18}
-                        icon={<PendingActionsIcon />}
-                        color="#D32F2F"
-                    />
-                </Grid>
-
-            </Grid>
+            </div>
 
             {/* Dashboard Widgets */}
+            <div className="dashboard-widgets">
 
-            <Grid
-                container
-                spacing={3}
-                sx={{ mt: 1 }}
-            >
-
-                {/* Left */}
-
-                <Grid item xs={12} lg={8}>
-
+                <div className="recent-customers-section">
                     <RecentCustomers />
+                </div>
 
-                </Grid>
+                <div className="loan-chart-section">
+                    <div className="dashboard-widget">
+                        <h3>Loan Overview</h3>
 
-                {/* Right */}
+                        <div className="empty-widget">
+                            Loan chart will be added here
+                        </div>
+                    </div>
+                </div>
 
-                <Grid item xs={12} lg={4}>
+            </div>
 
-                    {/* Loan Chart will go here */}
-
-                </Grid>
-
-            </Grid>
-
-        </MainLayout>
-
+        </div>
     );
-
 }
 
 export default DashboardPage;
