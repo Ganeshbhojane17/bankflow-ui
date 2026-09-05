@@ -5,19 +5,41 @@ import { getCustomerFileUrl } from "../../../utils/fileUrl";
 import "./CustomerListPage.css";
 
 function CustomerListPage() {
+    const navigate = useNavigate();
+
     const [customers, setCustomers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const navigate = useNavigate();
+
+    // Pagination
+    const [pageNumber, setPageNumber] = useState(1);
+    const [pageSize] = useState(10);
+    const [totalRecords, setTotalRecords] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+
+    // Filters
+    const [search, setSearch] = useState("");
+    const [isActive, setIsActive] = useState("");
 
     const loadCustomers = async () => {
         try {
             setLoading(true);
             setError("");
 
-            const response = await getCustomers({ pageNumber: 1, pageSize: 10 });
-            setCustomers(response.data?.items || []);
+            const response = await getCustomers({
+                pageNumber,
+                pageSize,
+                search: search || undefined,
+                isActive: isActive === "" ? undefined : isActive === "true"
+            });
+
+            const data = response.data;
+
+            setCustomers(data?.items || []);
+            setTotalRecords(data?.totalRecords || 0);
+            setTotalPages(data?.totalPages || 0);
         } catch (err) {
+            console.error(err);
             setError(err?.response?.data?.message || "Unable to load customers.");
         } finally {
             setLoading(false);
@@ -26,7 +48,17 @@ function CustomerListPage() {
 
     useEffect(() => {
         loadCustomers();
-    }, []);
+    }, [pageNumber, search, isActive]);
+
+    const handleSearchChange = (event) => {
+        setSearch(event.target.value);
+        setPageNumber(1);
+    };
+
+    const handleStatusChange = (event) => {
+        setIsActive(event.target.value);
+        setPageNumber(1);
+    };
 
     const handleDelete = async (id) => {
         const confirmed = window.confirm("Are you sure you want to delete this customer?");
@@ -55,7 +87,7 @@ function CustomerListPage() {
 
     return (
         <div className="customer-page">
-            {/* Page Header */}
+            {/* Header */}
             <div className="customer-page-header">
                 <div>
                     <h1>Customers</h1>
@@ -70,113 +102,150 @@ function CustomerListPage() {
                 </button>
             </div>
 
-            {/* Empty State */}
+            {/* Filters */}
+            <div className="customer-filters">
+                <input
+                    type="text"
+                    placeholder="Search customers..."
+                    value={search}
+                    onChange={handleSearchChange}
+                    className="customer-search"
+                />
+
+                <select
+                    value={isActive}
+                    onChange={handleStatusChange}
+                    className="customer-status-filter"
+                >
+                    <option value="">All Status</option>
+                    <option value="true">Active</option>
+                    <option value="false">Inactive</option>
+                </select>
+            </div>
+
+            <div className="customer-result-count">
+                Showing {customers.length} of {totalRecords} customers
+            </div>
+
             {customers.length === 0 ? (
                 <div className="customer-empty">No customers found.</div>
             ) : (
-                <div className="customer-table-container">
-                    <table className="customer-table">
-                        <thead>
-                            <tr>
-                                <th>Customer #</th>
-                                <th>Customer</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>City</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
+                <>
+                    <div className="customer-table-container">
+                        <table className="customer-table">
+                            <thead>
+                                <tr>
+                                    <th>Customer #</th>
+                                    <th>Customer</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>City</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
 
-                        <tbody>
-                            {customers.map(customer => (
-                                <tr key={customer.id}>
-                                    {/* Customer Number */}
-                                    <td className="customer-number">{customer.customerNumber}</td>
+                            <tbody>
+                                {customers.map((customer) => (
+                                    <tr key={customer.id}>
+                                        <td className="customer-number">
+                                            {customer.customerNumber}
+                                        </td>
 
-                                    {/* Customer */}
-                                    <td>
-                                        <div className="customer-info">
-                                            <div className="customer-profile">
-                                                {customer.profileImagePath ? (
-                                                    <img
-                                                        src={getCustomerFileUrl(customer.profileImagePath)}
-                                                        alt={customer.fullName}
-                                                        className="customer-profile-image"
-                                                        onError={(event) => {
-                                                            event.currentTarget.style.display = "none";
-                                                            event.currentTarget.nextElementSibling.style.display = "flex";
-                                                        }}
-                                                    />
-                                                ) : null}
+                                        <td>
+                                            <div className="customer-info">
+                                                <div className="customer-profile">
+                                                    {customer.profileImagePath ? (
+                                                        <img
+                                                            src={getCustomerFileUrl(customer.profileImagePath)}
+                                                            alt={customer.fullName}
+                                                            className="customer-profile-image"
+                                                        />
+                                                    ) : (
+                                                        <div className="customer-profile-placeholder">
+                                                            👤
+                                                        </div>
+                                                    )}
+                                                </div>
 
-                                                <div
-                                                    className="customer-profile-placeholder"
-                                                    style={{
-                                                        display: customer.profileImagePath ? "none" : "flex"
-                                                    }}
-                                                >
-                                                    👤
+                                                <div className="customer-name">
+                                                    {customer.fullName}
                                                 </div>
                                             </div>
+                                        </td>
 
-                                            <div className="customer-name">
-                                                {customer.fullName}
+                                        <td>{customer.email}</td>
+                                        <td>{customer.phoneNumber || "-"}</td>
+                                        <td>{customer.city || "-"}</td>
+
+                                        <td>
+                                            <span
+                                                className={`customer-status ${
+                                                    customer.isActive ? "active" : "inactive"
+                                                }`}
+                                            >
+                                                {customer.isActive ? "Active" : "Inactive"}
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <div className="customer-actions">
+                                                <button
+                                                    className="customer-action-button"
+                                                    onClick={() =>
+                                                        navigate(`/customers/view/${customer.id}`)
+                                                    }
+                                                >
+                                                    View
+                                                </button>
+
+                                                <button
+                                                    className="customer-action-button"
+                                                    onClick={() =>
+                                                        navigate(`/customers/edit/${customer.id}`)
+                                                    }
+                                                >
+                                                    Edit
+                                                </button>
+
+                                                <button
+                                                    className="customer-action-button delete"
+                                                    onClick={() => handleDelete(customer.id)}
+                                                >
+                                                    Delete
+                                                </button>
                                             </div>
-                                        </div>
-                                    </td>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
 
-                                    {/* Email */}
-                                    <td>{customer.email}</td>
+                    {/* Pagination */}
+                    <div className="customer-pagination">
+                        <button
+                            disabled={pageNumber === 1}
+                            onClick={() => setPageNumber((previous) => previous - 1)}
+                        >
+                            Previous
+                        </button>
 
-                                    {/* Phone */}
-                                    <td>{customer.phoneNumber || "-"}</td>
+                        <span>
+                            Page {pageNumber} of {totalPages}
+                        </span>
 
-                                    {/* City */}
-                                    <td>{customer.city || "-"}</td>
-
-                                    {/* Status */}
-                                    <td>
-                                        <span
-                                            className={`customer-status ${
-                                                customer.isActive ? "active" : "inactive"
-                                            }`}
-                                        >
-                                            {customer.isActive ? "Active" : "Inactive"}
-                                        </span>
-                                    </td>
-
-                                    {/* Actions */}
-                                    <td>
-                                        <div className="customer-actions">
-                                            <button className="customer-action-button"  onClick={() => navigate(`/customers/view/${customer.id}`)}>
-                                                View
-                                            </button>
-
-                                            <button
-                                                className="customer-action-button"
-                                                onClick={() => navigate(`/customers/edit/${customer.id}`)}
-                                            >
-                                                Edit
-                                            </button>
-
-                                            <button
-                                                className="customer-action-button delete"
-                                                onClick={() => handleDelete(customer.id)}
-                                            >
-                                                Delete
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                        <button
+                            disabled={pageNumber === totalPages}
+                            onClick={() => setPageNumber((previous) => previous + 1)}
+                        >
+                            Next
+                        </button>
+                    </div>
+                </>
             )}
         </div>
     );
 }
 
 export default CustomerListPage;
-
