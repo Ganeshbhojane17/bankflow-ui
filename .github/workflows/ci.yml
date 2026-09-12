@@ -5,6 +5,9 @@ on:
     branches:
       - master
 
+    tags:
+      - 'v*.*.*'
+
   pull_request:
     branches:
       - master
@@ -59,8 +62,6 @@ jobs:
 
     needs: build
 
-    # Docker image is published only for pushes.
-    # Pull requests only run the React build.
     if: github.event_name == 'push'
 
     steps:
@@ -89,19 +90,27 @@ jobs:
 
 
       # ------------------------------------------
-      # Generate Git SHA Docker Tag
+      # Generate Docker Tags
       # ------------------------------------------
 
-      - name: Generate Docker image tag
+      - name: Generate Docker image tags
         id: meta
         shell: bash
         run: |
-          echo "sha_tag=sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          SHORT_SHA="${GITHUB_SHA::7}"
+
+          echo "sha_tag=sha-${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            echo "version_tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version_tag=" >> "$GITHUB_OUTPUT"
+          fi
 
 
-      # ------------------------------------------
-      # Build and Push React UI
-      # ------------------------------------------
+      # ==========================================
+      # REACT UI
+      # ==========================================
 
       - name: Build and push UI Docker image
         uses: docker/build-push-action@v6
@@ -111,8 +120,6 @@ jobs:
 
           push: true
 
-          # Vite environment variables are required
-          # during the React build inside Docker.
           build-args: |
             VITE_IDENTITY_API_URL=http://localhost:7206/api
             VITE_CUSTOMER_API_URL=http://localhost:7087/api
@@ -120,3 +127,4 @@ jobs:
           tags: |
             ganesh170599/bankflow-ui:latest
             ganesh170599/bankflow-ui:${{ steps.meta.outputs.sha_tag }}
+            ${{ steps.meta.outputs.version_tag && format('ganesh170599/bankflow-ui:{0}', steps.meta.outputs.version_tag) || '' }}
