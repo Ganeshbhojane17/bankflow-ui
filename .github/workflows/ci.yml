@@ -9,7 +9,12 @@ on:
     branches:
       - master
 
+
 jobs:
+
+  # ==========================================
+  # JOB 1 - BUILD REACT APPLICATION
+  # ==========================================
 
   build:
     name: Build React UI
@@ -20,24 +25,33 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v4
 
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
 
+
       - name: Display Node.js version
         run: node --version
+
 
       - name: Display npm version
         run: npm --version
 
+
       - name: Install dependencies
         run: npm ci
+
 
       - name: Build React application
         run: npm run build
 
+
+  # ==========================================
+  # JOB 2 - BUILD AND PUSH DOCKER IMAGE
+  # ==========================================
 
   docker:
     name: Build Docker Image
@@ -45,6 +59,8 @@ jobs:
 
     needs: build
 
+    # Only push Docker image when code is pushed.
+    # Pull requests will only execute the build job.
     if: github.event_name == 'push'
 
     steps:
@@ -64,10 +80,26 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
 
+      # Generate a short Git commit SHA.
+      # Example:
+      # sha-6ddf102
+      - name: Generate Docker image tag
+        id: meta
+        shell: bash
+        run: |
+          echo "sha_tag=sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+
+      # ------------------------------------------
+      # React UI Docker Image
+      # ------------------------------------------
+
       - name: Build and push UI Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ganesh170599/bankflow-ui:latest
+          tags: |
+            ganesh170599/bankflow-ui:latest
+            ganesh170599/bankflow-ui:${{ steps.meta.outputs.sha_tag }}
