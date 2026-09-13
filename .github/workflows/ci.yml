@@ -100,8 +100,8 @@ jobs:
           push: true
 
           build-args: |
-            VITE_IDENTITY_API_URL=http://104.211.101.235:7206/api
-            VITE_CUSTOMER_API_URL=http://104.211.101.235:7087/api
+            VITE_IDENTITY_API_URL=/identity-api
+            VITE_CUSTOMER_API_URL=/customer-api
 
           tags: |
             ganesh170599/bankflow-ui:latest
